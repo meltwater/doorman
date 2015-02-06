@@ -4,27 +4,27 @@ body {
 }
 
 #container {
-  max-width: 920px;
+  max-width: 1100px;
   margin: 40px auto;
 }
 
 #title {
-  float: left;
-  width: 470px;
+width: 1100px;
+  /*float: left;
+  width: 470px; */
 }
 
 #logo {
-  width: 443px;
-  height: 467px;
+  width: 1100px;
+  height: 204px;
   text-indent: -10000px;
-  background: url(/_doorman/images/logo.jpg) top left no-repeat;
+  background: url(/_doorman/images/we-speak-your-language-banner.jpg) top left no-repeat;
 }
 
 #small-logo { display: none; padding-top: 30px; }
 
 #main {
-  padding-top: 100px;
-  margin-left: 470px;
+  margin: auto;
   max-width: 450px;
 }
 
