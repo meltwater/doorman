@@ -1,13 +1,13 @@
 body {
-  background: rgb(31,31,31) url(/_doorman/images/cockpit_blurred.jpg) no-repeat center center fixed;
+  background: rgb(240,240,240) url(/_doorman/images/cockpit_blurred.jpg) no-repeat center center fixed;
   background-size: cover;
-  color: #fff;
+  color: rgb(31,31,31);
   padding-top: 0px;
 }
 
 #container {
   background: rgb(240,240,240) url(/_doorman/images/cockpit_logo.png) top left no-repeat fixed;
-  background-size: 237px 47px;
+  background-size: 2473px 47px;
   position: fixed;
   top: 0px;
   left: 0px;
