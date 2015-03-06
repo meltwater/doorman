@@ -35,6 +35,10 @@ width: 1100px;
   max-width: 450px;
 }
 
+#provider-list a:first-of-type {
+    display: none;
+}
+
 h1 {
   font-weight: normal;
   font-style: italic;
@@ -136,3 +140,4 @@ form input {
   #small-logo { display: block; }
   #small-logo img { width: 100%; }
 }
+
