@@ -1,14 +1,14 @@
 body {
-  background: rgb(31,31,31) url(/_doorman/images/dockerui_blurred.jpg) no-repeat center center fixed;
+  background: rgb(255,255,255) url(/_doorman/images/dockerui_blurred.png) no-repeat center center fixed;
   background-size: cover;
   color: #fff;
   padding-top: 0px;
 }
 
 #container {
-  display:none;
-  background: rgb(31,31,31) url(/_doorman/images/logstash_logo.png) top left no-repeat fixed;
-  background-size: 237px 49px;
+  /* background: rgb(31,31,31) url(/_doorman/images/logstash_logo.png) top left no-repeat fixed;*/
+  /* background-size: 237px 49px; */
+  background: transparent;
   position: absolute;
   top: 0px;
   left: 0px;
