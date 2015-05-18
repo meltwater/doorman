@@ -44,7 +44,8 @@ h1 {
   font-weight: normal;
   font-style: italic;
   font-size: 1.6em;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #333;
+  color: #666;
   margin-bottom: 1.5em;
   font-family: Palatino, "Times New Roman", serif;
 }
