@@ -1,12 +1,12 @@
 body {
-  background: rgb(31,31,31) url(/_doorman/images/kibana4-logo.png) no-repeat center center fixed;
+  background: rgb(31,31,31) url(/_doorman/images/graphite-blur.jpg) no-repeat center center fixed;
   background-size: cover;
   color: #fff;
   padding-top: 0px;
 }
 
 #container {
-  background: rgb(31,31,31) url(/_doorman/images/kibana4-blur.jpg) top left no-repeat fixed;
+  background: rgb(31,31,31) url(/_doorman/images/graphite-logo.png) top left no-repeat fixed;
   background-size: 237px 49px;
   position: absolute;
   top: 0px;
