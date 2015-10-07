@@ -6,7 +6,7 @@ body {
 }
 
 #container {
-  background: rgb(31,31,31) url(/_doorman/images/graphite-logo.png) top left no-repeat fixed;
+  background: rgb(31,31,31) url(/_doorman/images/graphite-logo.png) top left repeat fixed;
   background-size: 1058px 63px;
   position: absolute;
   top: 0px;
