@@ -26,3 +26,16 @@ ADD conf.example.js /home/app/webapp/conf.js
 # start it up
 EXPOSE 8080
 CMD ["nginx"]
+=======
+FROM node
+
+ADD . /doorman
+
+RUN \
+  cd /doorman && \
+  npm install && \
+  mv conf.environment.js conf.js
+
+WORKDIR /doorman
+
+ENTRYPOINT [ "npm", "start" ]

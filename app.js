@@ -1,8 +1,6 @@
-try { var conf = require('./conf'); } catch(e) {
-  console.log("Missing conf.js.  Please copy conf.example.js to conf.js and edit it.");
-  process.exit(1);
-}
+var conf = require('./lib/config');
 
+var fs = require('fs');
 var http = require('http');
 var https = require('https');
 var express = require('express');
@@ -12,29 +10,30 @@ var cookieParser = require('cookie-parser');
 var flash = require('express-flash');
 var everyauth = require('everyauth');
 var Proxy = require('./lib/proxy');
-var github = require('./lib/modules/github');
-var google = require('./lib/modules/google');
-var password = require('./lib/modules/password');
-global.log = require('./lib/winston');
+var tls = require('./middlewares/tls');
+log = require('./lib/log');
 
 var proxy = new Proxy(conf.proxyTo.host, conf.proxyTo.port);
 var proxyMiddleware = proxy.middleware();
 
 // Set up our auth strategies
 if (conf.modules.github) {
+  var github = require('./lib/modules/github');
   github.setup(everyauth);
 }
 if (conf.modules.google) {
+  var google = require('./lib/modules/google');
   google.setup(everyauth);
 }
 if(conf.modules.password) {
+  var password = require('./lib/modules/password');
   password.setup(everyauth);
 }
 
 function userCanAccess(req) {
   var auth = req.session && req.session.auth;
   if(!auth) {
-    log.debug("User rejected because they haven't authenticated.");
+    log.info("User rejected because they haven't authenticated.");
     return false;
   }
 
@@ -72,7 +71,7 @@ function checkUser(req, res, next) {
     if(req.session && req.session.auth) {
       // User had an auth, but it wasn't an acceptable one
       req.session.auth = null;
-      log.debug("User successfully oauthed but their account does not meet the configured criteria.");
+      log.info("User successfully oauthed but their account does not meet the configured criteria.");
 
       req.flash('error', "Sorry, your account is not authorized to access the system.");
     }
@@ -105,9 +104,15 @@ var sessionOptions = conf.sessionCookie || {
 };
 var doormanSession = session(sessionOptions);
 
+var logMiddleware = function(req, res, next) {
+  log.info([req.method, req.headers.host, req.url].join(' '));
+  next();
+};
+
 var app = express();
 
-app.use(log.middleware());
+app.use(logMiddleware);
+app.use(tls);
 app.use(cookieParser(conf.sessionSecret));
 app.use(doormanSession);
 app.use(flash());
@@ -119,7 +124,7 @@ app.use(loginPage);
 
 // Uncaught error states
 app.on('error', function(err) {
-  console.log(err);
+  log.error(err);
 });
 
 everyauth.everymodule.moduleErrback(function(err, data) {
@@ -128,21 +133,45 @@ everyauth.everymodule.moduleErrback(function(err, data) {
 });
 
 // We don't actually use this
-everyauth.everymodule.findUserById(function(userId, callback) { callback(userId); })
-
-var server = http.createServer(app);
+everyauth.everymodule.findUserById(function(userId, callback) { callback(userId); });
 
 // WebSockets are also authenticated
-server.on('upgrade', function(req, socket, head) {
-  doormanSession(req, new http.ServerResponse(req), function() {
-    if(userCanAccess(req)) {
-      proxy.proxyWebSocketRequest(req, socket, head);
-    } else {
-      socket.destroy();
-    }
+function upgradeWebsocket(server) {
+  server.on('upgrade', function(req, socket, head) {
+    doormanSession(req, new http.ServerResponse(req), function() {
+      if(userCanAccess(req)) {
+        proxy.proxyWebSocketRequest(req, socket, head);
+      } else {
+        socket.destroy();
+      }
+    });
   });
-});
+}
 
-server.listen(conf.port);
+var notice = "Doorman on duty,";
 
-log.notice("Doorman on duty, listening on port " + conf.port + " and proxying to " + conf.proxyTo.host + ":" + conf.proxyTo.port + ".");
+var httpServer = http.createServer(app);
+
+// Enable HTTPS if SSL options exist
+if (conf.securePort && conf.ssl && conf.ssl.keyFile && conf.ssl.certFile) {
+  var options = {
+    key: fs.readFileSync(conf.ssl.keyFile),
+    cert: fs.readFileSync(conf.ssl.certFile)
+  };
+
+  if (conf.ssl.caFile) options.ca = fs.readFileSync(conf.ssl.caFile);
+
+  var httpsServer = https.createServer(options, app);
+
+  upgradeWebsocket(httpsServer);
+  httpsServer.listen(conf.securePort);
+
+  notice += " listening on secure port " + conf.securePort;
+}
+notice += " listening on port " + conf.port;
+notice += " and proxying to " + conf.proxyTo.host + ":" + conf.proxyTo.port + ".";
+
+upgradeWebsocket(httpServer);
+httpServer.listen(conf.port);
+
+log.error(notice);

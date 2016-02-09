@@ -1,6 +1,6 @@
 {
   "name": "doorman-proxy",
-  "version": "0.3.0",
+  "version": "0.4.1",
   "description": "Provides an authentication/authorization layer in front of other http/websocket services",
   "keywords": [
     "oauth",
@@ -23,7 +23,7 @@
     "express-flash":  "0.0.2",
     "everyauth":      "0.4.9",
     "express":        "4.8.8",
-    "http-proxy":     "1.11.0",
+    "http-proxy":     "1.11.1",
     "jade":           "1.6.0",
     "winston":        "0.5.9"
   },
